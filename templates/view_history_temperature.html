@@ -1,60 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        .head {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .table {
-            margin-top: 30px;
-            width: 80%;
-            margin-left: auto;
-            margin-right: auto;
-            text-align: center;
-        }
-    </style>
-</head>
-<body>
-    <div class="head">
-        
-        <h1>History of Temperature</h1>
-        <h3><a href="{% url 'add_temperature' %}">新增溫度</a></h3>
-        <h3><a href="{% url 'show_temperature1' %}">顯示目前溫濕度</a></h3>
-        <h3><a href="{% url 'show_temperature2' %}">顯示目前溫濕度2</a></h3>
-        <h3><a href="{% url 'view_history_temperature' %}">返回歷史紀錄</a></h3>
-        
-
-    </div>
+{% extends 'base.html' %}
+{% load tz %}
+{% block title %}歷史紀錄 | 溫濕度監測系統{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-end mb-4 gap-3">
     <div>
-        <table class="table">
-            <tr>
-                <th>id</th>
-                <th>sensor id</th>
-                <th>溫度</th>
-                <th>濕度</th>
-                <th>時間</th>
-            </tr>
+        <span class="badge badge-soft rounded-pill px-3 py-2 mb-2">歷史紀錄</span>
+        <h1 class="page-title h2 mt-2 mb-0">溫濕度歷史紀錄</h1>
+        <p class="page-subtitle mb-0">共 {{ resultList|length }} 筆資料</p>
+    </div>
+    <a href="{% url 'add_temperature' %}" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-1"></i>新增資料
+    </a>
+</div>
 
-            {% for data in resultList %}
-            <tr>
-                <td>{{ data.myid }}</td>
-                <td>{{ data.sensor_id }}</td>
-                <td>{{ data.temperature }}</td>
-                <td>{{ data.humidity }}</td>
-                
-                {% comment %} 更改時域:台北時間 {% endcomment %}
-                {% load tz %}
-                {% timezone "Asia/Taipei" %}
-                <td>{{ data.timestamp | date:"Y-m-d H:i:s" }}</td>
-                {% endtimezone %}
-            </tr>
-            {% endfor %}
-
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead>
+                <tr class="text-muted small text-uppercase">
+                    <th class="ps-4">ID</th>
+                    <th>Sensor ID</th>
+                    <th>溫度</th>
+                    <th>濕度</th>
+                    <th class="pe-4">時間</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in resultList %}
+                <tr>
+                    <td class="ps-4 text-muted">{{ data.myid }}</td>
+                    <td class="fw-semibold">{{ data.sensor_id }}</td>
+                    <td>{{ data.temperature }} °C</td>
+                    <td>{{ data.humidity }} %</td>
+                    {% timezone "Asia/Taipei" %}
+                    <td class="pe-4 text-muted">{{ data.timestamp|date:"Y-m-d H:i:s" }}</td>
+                    {% endtimezone %}
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted py-5">尚無資料</td>
+                </tr>
+                {% endfor %}
+            </tbody>
         </table>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

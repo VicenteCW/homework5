@@ -12,7 +12,7 @@ def view_history_temperature_list(request):
         print(model_to_dict(data))
 
     # return HttpResponse("Viewiing history of tem.")
-    return render(request, 'view_history_temperature.html', {'resultList': resultList})
+    return render(request, 'view_history_temperature.html', {'resultList': resultList, 'active': 'history'})
 
 # from django.views.decorators.csrf import csrf_exempt 移到上面去了
 @csrf_exempt
@@ -47,13 +47,13 @@ def add_temperature(request):
     
     else:        
         #return HttpResponse(request, "Adding temperature via web form.")
-        return render(request, 'add_temperature.html')
+        return render(request, 'add_temperature.html', {'active': 'add'})
 
 def show_temperature1(request):
     resultList=Temperature_db.objects.all().order_by('-timestamp')[:1]
     print(model_to_dict(resultList[0]))
     data = model_to_dict(resultList[0])
-    return render(request, 'show _temperature1.html', {'data': data})
+    return render(request, 'show _temperature1.html', {'data': data, 'active': 'show1'})
 
 def show_temperature_API(request):
     resultList =Temperature_db.objects.all().order_by('-timestamp')[:1]
@@ -63,5 +63,5 @@ def show_temperature_API(request):
 
 def show_temperature2(request):
   
-    return render(request, 'show_temperature2.html')
+    return render(request, 'show_temperature2.html', {'active': 'show2'})
 
